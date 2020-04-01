@@ -1,0 +1,5 @@
+/dist/
+/build/
+/ftntlib.egg-info/
+/venv/
+/.idea/
