@@ -37,6 +37,7 @@ class FortiManagerJSON (object):
         self._root = False
         self._rootpath = None
         self._timeout = None
+        self._socket = requests.session()
     
   
     def jprint (self,json_obj):
@@ -139,7 +140,7 @@ class FortiManagerJSON (object):
         self.dprint('REQUEST:',datagram)
 
         try: 
-            response = requests.post(
+            response = self._socket.post(
                                      self._url, 
                                      data=json.dumps(datagram), 
                                      headers=headers,
@@ -294,7 +295,34 @@ class FortiManagerJSON (object):
             params[0]['data'] = data
         status, response = self.http_request('update',params)
         return status, response
-    
+
+    def wifi_update(self, url, data={}, scope=[]):
+        params = [{'url': url}]
+        if data:
+            params[0]['data'] = data
+        if scope:
+            params[0]['scope member'] = scope
+        status, response = self.http_request('update', params)
+        return status, response
+
+    def switch_update(self, url, data={}, scope=[]):
+        params = [{'url': url}]
+        if data:
+            params[0]['data'] = data
+        if scope:
+            params[0]['scope member'] = scope
+        status, response = self.http_request('update', params)
+        return status, response
+
+    def switch_add(self, url, data={}, push=1):
+        params = [{'url': url}]
+        if data:
+            params[0]['data'] = data
+        if push:
+            params[0]['push'] = push
+        status, response = self.http_request('add', params)
+        return status, response
+
     def set (self,url,data={}):
         params = [{ 'url' : url }]
         if data:
